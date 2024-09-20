@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Catálogo</title>
@@ -11,100 +11,71 @@
     <header th:replace="fragments/navBar :: nav_bar"></header>
     <!-- Navbar End -->
 
+
     <div class="container my-4">
+        <h1 class="text-center">Catálogo de Flores</h1>
+
+        <!-- Filtros -->
+        <form class="row g-3 mb-4" method="get" action="/flores/Catalogo">
+            <div class="col-md-4">
+                <select name="color" class="form-select">
+                    <option value="">Color</option>
+                    <option value="rojo">Rojo</option>
+                    <option value="verde">Verde</option>
+                    <option value="azul">Azul</option>
+                    <option value="blanco">Blanco</option>
+                    <option value="amarillo">Amarillo</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="tipo" class="form-select">
+                    <option value="">Tipo</option>
+                    <option value="rosas">Rosa</option>
+                    <option value="claveles">Clavel</option>
+                    <option value="hortencias">Hortencia</option>
+                    <option value="girasoles">Girasol</option>
+                    <option value="tulipanes">Tulipán</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="ocasion" class="form-select">
+                    <option value="">Ocasión</option>
+                    <option value="Primavera">Primavera</option>
+                    <option value="San Valentin">San Valentín</option>
+                    <option value="Aniversario">Aniversario</option>
+                    <option value="Día de Amistad">Día de la Amistad</option>
+                    <option value="Día del Padre">Día del Padre</option>
+                    <option value="Día de la Madre">Día de la Madre</option>
+                    <option value="Condolencias">Condolencias</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-outline-dark">Aplicar Filtros</button>
+                <a href="/flores/Catalogo" class="btn btn-outline-dark">Quitar Filtros</a>
+
+            </div>
+        </form>
+
         <div class="row">
-            <!-- Repetir esta card para cada flor -->
-            <div class="col-md-4">
+            <div class="col-md-3 mb-4" th:each="flor : ${listaFlowers}">
                 <div class="card h-100">
-                    <img src="https://floreriarosaliz.pe/wp-content/uploads/2024/09/4.png" class="card-img-top" alt="Nombre de la flor">
+                    <img th:src="@{'/images/' + ${flor.imagenURL}}" class="card-img-top" th:alt="${flor.nombre}">
                     <div class="card-body">
-                        <h5 class="card-title">Nombre de la Flor</h5>
-                        <p class="card-text">Descripción de la flor.</p>
-                        <p class="card-text"><strong>Precio: $Precio</strong></p>
+                        <h5 class="card-title" th:text="${flor.nombre}">Nombre de la Flor</h5>
+                        <p class="card-text" th:text="${flor.descripcion}">Descripción de la flor</p>
+                        <p class="card-text"><strong th:text="'Precio: $' + ${flor.precio}">Precio</strong></p>
                     </div>
-                    <div class="card-footer">
-                        <button class="btn btn-primary">Agregar al carrito</button>
-                        <button class="btn btn-danger">Quitar del carrito</button>
-                        <button class="btn btn-success">Comprar</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <img src="https://floreriarosaliz.pe/wp-content/uploads/2024/09/4.png" class="card-img-top" alt="Nombre de la flor">
-                    <div class="card-body">
-                        <h5 class="card-title">Nombre de la Flor</h5>
-                        <p class="card-text">Descripción de la flor.</p>
-                        <p class="card-text"><strong>Precio: $Precio</strong></p>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-primary">Agregar al carrito</button>
-                        <button class="btn btn-danger">Quitar del carrito</button>
-                        <button class="btn btn-success">Comprar</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <img src="https://floreriarosaliz.pe/wp-content/uploads/2024/09/4.png" class="card-img-top" alt="Nombre de la flor">
-                    <div class="card-body">
-                        <h5 class="card-title">Nombre de la Flor</h5>
-                        <p class="card-text">Descripción de la flor.</p>
-                        <p class="card-text"><strong>Precio: $Precio</strong></p>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-primary">Agregar al carrito</button>
-                        <button class="btn btn-danger">Quitar del carrito</button>
-                        <button class="btn btn-success">Comprar</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <img src="https://floreriarosaliz.pe/wp-content/uploads/2024/09/4.png" class="card-img-top" alt="Nombre de la flor">
-                    <div class="card-body">
-                        <h5 class="card-title">Nombre de la Flor</h5>
-                        <p class="card-text">Descripción de la flor.</p>
-                        <p class="card-text"><strong>Precio: $Precio</strong></p>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-primary">Agregar al carrito</button>
-                        <button class="btn btn-danger">Quitar del carrito</button>
-                        <button class="btn btn-success">Comprar</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <img src="https://floreriarosaliz.pe/wp-content/uploads/2024/09/4.png" class="card-img-top" alt="Nombre de la flor">
-                    <div class="card-body">
-                        <h5 class="card-title">Nombre de la Flor</h5>
-                        <p class="card-text">Descripción de la flor.</p>
-                        <p class="card-text"><strong>Precio: $Precio</strong></p>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-primary">Agregar al carrito</button>
-                        <button class="btn btn-danger">Quitar del carrito</button>
-                        <button class="btn btn-success">Comprar</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <img src="https://floreriarosaliz.pe/wp-content/uploads/2024/09/4.png" class="card-img-top" alt="Nombre de la flor">
-                    <div class="card-body">
-                        <h5 class="card-title">Nombre de la Flor</h5>
-                        <p class="card-text">Descripción de la flor.</p>
-                        <p class="card-text"><strong>Precio: $Precio</strong></p>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-primary">Agregar al carrito</button>
-                        <button class="btn btn-danger">Quitar del carrito</button>
-                        <button class="btn btn-success">Comprar</button>
+                    <div class="card-footer d-flex justify-content-center gap-2">
+                        <button class="btn btn-outline-dark btn-sm">Agregar al carrito</button>
+                        <button class="btn btn-outline-dark btn-sm">Quitar del carrito</button>
+                        <button class="btn btn-outline-dark btn-sm">Comprar</button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="total-flores text-center mt-4">
+        <p>Total de flores disponibles: <strong th:text="${totalFlores}"> </strong></p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
