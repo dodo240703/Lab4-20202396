@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -37,7 +39,16 @@ public class florController {
         return "catalogoPage";
     }
     @GetMapping("/Entretenimiento")
-    public String showEntretenimiento() {
+    public String showEntretenimiento(Model model) {
+        List<Flor> listaFlowers = florRepository.findAll();
+
+        // Duplica y mezcla las flores para tener pares
+        List<Flor> cartas = new ArrayList<>(listaFlowers);
+        cartas.addAll(listaFlowers); // Duplicar para los pares
+        Collections.shuffle(cartas); // Mezclar las cartas
+
+
+        model.addAttribute("listaFlowers", cartas);
         return "entretenimientoPage";
     }
     @GetMapping("/Carrito")
