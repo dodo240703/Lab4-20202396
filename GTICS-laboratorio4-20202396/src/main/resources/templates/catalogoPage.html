@@ -67,8 +67,7 @@
                         <p class="card-text"><strong th:text="'Precio: $' + ${flor.precio}">Precio</strong></p>
                     </div>
                     <div class="card-footer d-flex justify-content-center gap-2">
-                        <button class="btn btn-outline-dark btn-sm">Agregar al carrito</button>
-                        <button class="btn btn-outline-dark btn-sm">Quitar del carrito</button>
+                        <a class="btn btn-outline-dark btn-sm" th:href="@{'/flores/agregar?id=' + ${flor.idFlor}}">Agregar al carrito</a>
                         <button class="btn btn-outline-dark btn-sm">Comprar</button>
                     </div>
                 </div>
