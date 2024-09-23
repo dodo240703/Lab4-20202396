@@ -8,11 +8,22 @@
     <style>
         .card {
             cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: scale(1.05);
         }
         .card-img-top {
             width: 100%;
-            height: 214.4px;
+            height: 150px;
             object-fit: cover;
+        }
+        .card-back {
+            background-color: #007bff;
+        }
+        .matched {
+            opacity: 0.6;
+            cursor: default;
         }
     </style>
 </head>
@@ -23,15 +34,21 @@
 
     <div class="text-center">
         <h1 class="text-warning">Jardín de Memoria</h1>
+        <h2 id="score">Puntuación: 0</h2>
     </div>
 
-    <div class="container">
+    <div class="container" id="game-board">
         <div class="row">
-            <div class="col-4 col-md-2 mb-2" th:each="flor : ${listaFlowers}">
-                <div class="card">
-                    <img th:src="@{'/images/' + ${flor.imagenURL}}" class="card-img-top" th:alt="${flor.nombre}" style="height: 150px; object-fit: cover;">
-                    <div class="card-body text-center p-1">
-                        <p class="card-text" th:text="${flor.nombre}"></p>
+            <div class="col-4 col-md-2 mb-2" th:each="flor, iterStat : ${listaFlowers}">
+                <div class="card" th:attr="data-id=${flor.idFlor}">
+                    <div class="card-back">
+                        <img src="/images/card-back.jpg" class="card-img-top" alt="Card Back">
+                    </div>
+                    <div class="card-front" style="display: none;">
+                        <img th:src="@{'/images/' + ${flor.imagenURL}}" class="card-img-top" th:alt="${flor.nombre}">
+                        <div class="card-body text-center p-1">
+                            <p class="card-text" th:text="${flor.nombre}"></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -50,33 +67,101 @@
             </tr>
             </thead>
             <tbody>
-            <!-- Los datos se rellenarán desde la base de datos -->
             <tr th:each="user :${listaUsuarios}">
                 <td th:text="${user.getNickname()}"></td>
                 <td th:text="${user.getPuntuacion()}"></td>
             </tr>
-
             </tbody>
         </table>
     </div>
 
     <div class="container my-4">
-        <h2 class="text-center">Ingresar Puntuación</h2>
-        <form action="/flores/Entretenimiento" method="POST" class="w-50 mx-auto">
+        <h2 class="text-center">Guardar Puntuación</h2>
+        <form id="scoreForm" action="/flores/Entretenimiento" method="POST" class="w-50 mx-auto">
             <div class="form-group">
                 <label for="nickname">Usuario</label>
                 <input type="text" class="form-control" id="nickname" name="nickname" placeholder="Ingrese su usuario" required>
             </div>
             <div class="form-group mt-4">
                 <label for="puntuacion">Puntuación</label>
-                <input type="number" class="form-control" id="puntuacion" name="puntuacion" placeholder="Ingrese su puntuación" required>
+                <input type="number" class="form-control" id="puntuacion" name="puntuacion" readonly>
             </div>
-            <button type="submit" class="btn btn-primary btn-block mt-4">Enviar</button>
+            <button type="submit" class="btn btn-primary btn-block mt-4">Guardar Puntuación</button>
         </form>
     </div>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const gameBoard = document.getElementById('game-board');
+            const scoreDisplay = document.getElementById('score');
+            const scoreInput = document.getElementById('puntuacion');
+            let flippedCards = [];
+            let matchedPairs = 0;
+            let isProcessing = false;
+            let score = 0;
 
+            gameBoard.addEventListener('click', function(e) {
+                const clickedCard = e.target.closest('.card');
+                if (!clickedCard || isProcessing || flippedCards.length >= 2 || clickedCard.classList.contains('matched')) return;
+
+                flipCard(clickedCard);
+
+                if (flippedCards.length === 2) {
+                    isProcessing = true;
+                    setTimeout(checkForMatch, 1000);
+                }
+            });
+
+            function flipCard(card) {
+                if (flippedCards.includes(card)) return;
+
+                card.querySelector('.card-back').style.display = 'none';
+                card.querySelector('.card-front').style.display = 'block';
+                flippedCards.push(card);
+            }
+
+            function unflipCards() {
+                flippedCards.forEach(card => {
+                    card.querySelector('.card-back').style.display = 'block';
+                    card.querySelector('.card-front').style.display = 'none';
+                });
+                flippedCards = [];
+            }
+
+            function checkForMatch() {
+                const [card1, card2] = flippedCards;
+                if (card1.dataset.id === card2.dataset.id) {
+                    matchedPairs++;
+                    score += 3;
+                    flippedCards.forEach(card => {
+                        card.classList.add('matched');
+                    });
+                    flippedCards = [];
+                    if (matchedPairs === gameBoard.querySelectorAll('.card').length / 2) {
+                        alert('¡Felicidades! Has completado el juego. Tu puntuación final es: ' + score);
+                    }
+                } else {
+                    score = Math.max(0, score - 0.5);
+                    unflipCards();
+                }
+                updateScore();
+                isProcessing = false;
+            }
+
+            function updateScore() {
+                scoreDisplay.textContent = 'Puntuación: ' + score.toFixed(1);
+                scoreInput.value = score.toFixed(1);
+            }
+
+            document.getElementById('scoreForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (confirm('¿Estás seguro de que quieres guardar tu puntuación?')) {
+                    this.submit();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

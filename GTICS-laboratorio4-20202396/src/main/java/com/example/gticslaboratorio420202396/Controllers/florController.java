@@ -99,6 +99,21 @@ public class florController {
         return "redirect:/flores/Carrito";
     }
 
+    @PostMapping("/procesarPagoDesdeCatalogo")
+    public String compraFlorDesdeCatalogo(RedirectAttributes attr){
+        attr.addFlashAttribute("compraMsg","Su compra se ha realizado de forma correcta, se le enviará la orden de compra a su correo.");
+
+        return "redirect:/flores/Catalogo";
+    }
+
+    @PostMapping("/procesarCompraTotal")
+    public String compraTotal(RedirectAttributes attr) {
+        carritoRepository.deleteAll(); // Elimina todos los productos del carrito
+
+        attr.addFlashAttribute("compraMsg", "Se realizó correctamente el pago de todos los productos de su carrito, revise su correo para ver la orden de compra.");
+        return "redirect:/flores/Carrito";
+    }
+
     @GetMapping("/agregar")
     public String florAgregar(Model model,@RequestParam("id") int id, RedirectAttributes attr) {
         Flor flor = florRepository.findById(id).orElse(null);
